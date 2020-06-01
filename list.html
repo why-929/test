@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+
+    .goods {
+        width: 1160px;
+        margin: 0 auto;
+        font-size: 14px;
+    }
+
+    .goods li {
+        width: 200px;
+        padding: 10px;
+        float: left;
+        margin: 0 10px 10px 0;
+        border: 1px solid #ccc;
+        height: 310px;
+        position: relative;
+    }
+
+    .goods li p {
+        width: 200px;
+        height: 48px;
+        line-height: 24px;
+        overflow: hidden;
+    }
+
+    .goods li img {
+        width: 200px;
+        height: 200px;
+        display: block;
+    }
+
+    .goods li span {
+    display: block;
+    }
+</style>
+</head>
+<body>
+<div class="goods">
+
+</div>
+<script src="script/ajax.js"></script>
+    <script>
+    //获取元素
+    const goods = document.querySelector('.goods');
+    //利用ajax将数据库数据渲染到列表页面
+        $ajax({
+            url:'http://127.0.0.1/2002/php/taobaodata.php',
+            success:function(data){
+                let arrdata = JSON.parse(data);//将json字符串转为数组
+                //渲染
+                let strhtml = '<ul>';
+                for(let value of arrdata) {
+                    strhtml +=`
+                        <li>
+                            <a href="detail.html?sid=${value.sid}">
+                                <img src="${value.url}">
+                                <p>${value.title}</p>
+                                <span class="price">${value.price}</span>
+                                <span>${value.sailnumber}</span>
+                            </a>
+                        </li>
+                    `;
+                }
+                strhtml+='</ul>';
+                goods.innerHTML = strhtml;
+            }
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/cart.css">
+</head>
+<body>
+    <div id="container" class="cart">
+        <div class="w">
+            <!--全部商品哪一行-->
+            <div class="cart-top" style="display: block;">
+                <div class="cart-top-left">
+                    <a href=""><em>全部商品</em></a>
+                </div>
+                <div class="footline">
+                    <div class="line"></div>
+                </div>
+            </div>
+            <!--包裹购物车-->
+            <div class="cart-wrap" style="display: block;">
+                <div class="w">
+                    <div id="jd-cart">
+                        <div class="cartmain">
+                            <div class="cart-thead">
+                                <div class="cart-col t-checkbox">
+                                    <div class="cart-checkbox">
+                                        <input type="checkbox" checked="" name="" id="" class="allsel" value=""> 全选
+                                    </div>
+                                </div>
+                                <div class="cart-col t-goods">商品</div>
+                                <div class="cart-col t-props"></div>
+                                <div class="cart-col t-prices">单价(元)</div>
+                                <div class="cart-col t-quantity">数量</div>
+                                <div class="cart-col t-sum">小计(元)</div>
+                                <div class="cart-col t-action">操作</div>
+                            </div>
+                            <div id="cart-list">
+                                <div class="cart-item-list">
+                                    <div class="cart-tbody">
+                                        <!-- 显示购物车列表 -->
+                                        <div class="item-list">
+                                            
+                                       
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="cart-floatbar">
+                        <div class="select-all">
+                            <div class="cart-checkbox">
+                                <input type="checkbox" checked="" name="" id="" class="allsel" value=""> 全选
+                            </div>
+                        </div>
+                        <div class="operation">
+                            <a href="javascript:void(0)">删除选中的商品</a>
+                        </div>
+                        <div class="toolbar-right">
+                            <div class="btn-area">
+                                <a href=""></a>
+                            </div>
+                            <div class="price-sum">
+                                <span class="txt">总价（不含运费）：</span>
+                                <span class="totalprice">7674.00</span>
+                                <span class="txt">已节省：</span>
+                                <span class="totalsave">-￥0.00</span>
+                            </div>
+                            <div class="amount-sum">
+                                已选择
+                                <em>126</em> 件商品
+                                <b></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script/ajax.js"></script>
+    <script src="script/cookie.js"></script>
+    <script>
+        const itemlist = document.querySelector('.item-list');
+        //1.获取cookie，进行取值渲染
+        if(cookie.get('cookiesid') && cookie.get('cookienum')){
+            //获取cookie，转换成数组。
+            let arrsid = cookie.get('cookiesid').split(',');
+            let arrnum = cookie.get('cookienum').split(',');
+            for(let i = 0;i<arrsid.length;i++){
+                rendergoods(arrsid[i],arrnum[i]);
+            }
+
+        }
+
+
+        //2.封装函数实现render
+        function rendergoods(sid,num){//sid:渲染的商品编号   num:商品的数量
+            $ajax({
+                url:'http://127.0.0.1/2002/php/taobaodata.php',
+                success:function(data){
+                    let arrdata = JSON.parse(data);//json字符串转为数组
+                    console.log(arrdata);
+                    let strhtml = '';
+                    for(let value of arrdata){
+                        if(value.sid === sid){
+                            strhtml+=`
+                                <div class="goods-item goods-item-sele" style="display: block;">
+                                    <div class="goods-info">
+                                        <div class="cell b-checkbox">
+                                            <div class="cart-checkbox">
+                                                <input type="checkbox" checked="" name="" id="" value="">
+                                                <span class="line-circle"></span>
+                                            </div>
+                                        </div>
+                                        <div class="cell b-goods">
+                                            <div class="goods-name">
+                                                <div class="goods-pic">
+                                                    <a href=""><img src="${value.url}" alt="" sid="1"></a>
+                                                </div>
+                                                <div class="goods-msg">
+                                                    <div class="goods-d-info">
+                                                        <a href="">${value.title}</a>
+                                                    </div>
+                                                    <div class="goods-ex">
+                                                        <span class="promise"></span>
+                                                        <span class="promise">
+                                                            <i></i><a href="">购买京东服务</a>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="cell b-props">
+                                            <div class="prop-text"></div>
+                                        </div>
+                                        <div class="cell b-price">
+                                            <strong>${value.price}</strong>
+                                            <a class="sales-promotion" href="">
+                                                促销优惠
+                                                <b></b>
+                                            </a>
+                                            <div class="sales-promotion-dropdown">
+                                            </div>
+                                        </div>
+                                        <div class="cell b-quantity">
+                                            <div class="quantity-form">
+                                                <a class="quantity-down" href="javascript:void(0)">-</a>
+                                                <input type="text" value="${num}">
+                                                <a class="quantity-add" href="javascript:void(0)">+</a>
+                                            </div>
+                                            <div class="quantity-text">有货</div>
+                                        </div>
+                                        <div class="cell b-sum">
+                                            <strong>${(value.price*num).toFixed(2)}</strong>
+                                        </div>
+                                        <div class="cell b-action">
+                                            <a href="javascript:void(0)">删除</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+
+                    itemlist.innerHTML+=strhtml;
+                }
+            })
+        }
+    </script>
+</body>
+</html>
